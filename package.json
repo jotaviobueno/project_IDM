@@ -1,0 +1,37 @@
+{
+  "name": "testando",
+  "version": "1.0.0",
+  "description": "testando uma nova forma de model e uma nova forma dos find",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/server.js"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jotaviobueno/testando.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jotaviobueno/testando/issues"
+  },
+  "homepage": "https://github.com/jotaviobueno/testando#readme",
+  "devDependencies": {
+    "chalk-animation": "^2.0.3",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.26.0",
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "ip": "^2.0.0",
+    "mongoose": "^6.7.0",
+    "nanoid": "^4.0.0",
+    "yup": "^0.32.11"
+  }
+}
