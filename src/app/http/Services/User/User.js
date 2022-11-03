@@ -60,7 +60,6 @@ class UserServices {
 					genre: user.genre,
 					birth_date: user.birth_date,
 					resident_country: user.resident_country,
-					reports: user.reports,
 					friends: user.friends,
 					article_owner: user.article_owner,
 					created_at: user.created_at,
@@ -72,6 +71,43 @@ class UserServices {
 		return { statuscode: 422, message: { error: "unable to complete the request" } };
 	}
 
+	async outherProfiles(session_id, username, userAgent) {
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		if (! await UserRepository.findUserById(session.user_id) )
+			return;
+
+		let outherUser;
+
+		if ((outherUser = await UserRepository.existUsername(username.replace(" ", ""))))
+			return { statuscode: 200, message: { 
+				user: {
+					full_name: outherUser.full_name,
+					username: outherUser.username,
+					email: outherUser.email,
+					email_verified: outherUser.email_verified,
+					avatar_url: outherUser.avatar_url,
+					genre: outherUser.genre,
+					birth_date: outherUser.birth_date,
+					resident_country: outherUser.resident_country,
+					friends: outherUser.friends,
+					article_owner: outherUser.article_owner,
+					created_at: outherUser.created_at,
+				}
+			}};
+
+		return { statuscode: 422, message: { error: "unable to complete the request" } };
+	}
 }
 
 export default new UserServices;

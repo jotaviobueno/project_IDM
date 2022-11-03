@@ -28,6 +28,16 @@ class UserController {
 
 		return res.status(profile.statuscode).json(profile.message); 
 	}
+
+	async outherProfile(req, res) {
+		const userAgent = req.headers["user-agent"];
+		const {username} = req.params;
+		const {session_id} = req.headers;
+
+		const profile = await UserServices.outherProfiles(session_id, username, userAgent);
+
+		return res.status(profile.statuscode).json(profile.message); 
+	}
 }
 
 export default new UserController;
