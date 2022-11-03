@@ -19,7 +19,7 @@ const User = new Schema({
 	permissions: { type: Array, required: true },
 	created_at: { type: Date, default: Date.now, required: true },
 	updated_at: { type: Date, required: true },
-	update_logs: [{log: { type: String, required: true }, updated_at: { type: Date, required: true } }],
+	update_logs: [{log: { type: String, required: true }, old: String, new: String, updated_at: { type: Date, required: true } }],
 	deleted_at: { type: Date, default: Date.now }
 });
 

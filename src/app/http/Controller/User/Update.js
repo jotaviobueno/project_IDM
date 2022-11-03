@@ -12,6 +12,16 @@ class UpdateController {
 		return res.status(update.statuscode).json(update.message);
 	}
 
+	async updateFullName(req, res) {
+		const {session_id} = req.headers;
+		const userAgent = req.headers["user-agent"];
+		const {new_full_name} = req.body;
+
+		const update = await UpdateServices.updateFullName(session_id, new_full_name, userAgent);
+
+		return res.status(update.statuscode).json(update.message);
+	}
+
 }
 
 export default new UpdateController;
