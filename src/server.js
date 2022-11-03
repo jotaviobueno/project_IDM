@@ -5,7 +5,7 @@ import chalk from "chalk-animation";
 
 const server = express();
 
-const port = 8080;
+const port = 3001;
 
 // Database Connection
 import "./database/connection.js";

@@ -1,0 +1,26 @@
+import mongoose from "mongoose";
+
+const Schema = mongoose.Schema;
+
+const User = new Schema({
+
+	full_name: { type: String, required: true, },
+	username: { type: String, required: true },
+	email: { type: String,required: true },
+	email_verified: { type: Boolean, required: true },
+	password: { type: String, required: true },
+	avatar_url: { type: String },
+	genre: { type: String, required: true },
+	birth_date: { type: Date, required: true },
+	resident_country: { type: String, required: true },
+	reports: { type: Array, required: true },
+	friends: { type: Array, required: true },
+	article_owner: { type: Array, required: true },
+	permissions: { type: Array, required: true },
+	created_at: { type: Date, default: Date.now, required: true },
+	updated_at: { type: Date, required: true },
+	update_logs: { type: Array, required: true },
+	deleted_at: { type: Date, default: Date.now }
+});
+
+export default mongoose.model("Users", User);
