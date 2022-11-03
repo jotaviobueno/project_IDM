@@ -28,6 +28,11 @@ class AuthLoginRepository {
 		return session;
 	}
 
+	async disconnectUser(session_id) {
+		await SessionModel.updateOne({session_id: session_id, disconnected_in: null}, 
+			{disconnected_in: new Date(), updated_at: new Date()});
+	}
+
 }
 
 export default new AuthLoginRepository;

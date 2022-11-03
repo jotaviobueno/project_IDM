@@ -67,7 +67,7 @@ class UserRepository {
 			permissions: ["guest"],
 			created_at: new Date(),
 			updated_at: new Date(),
-			update_logs: ["created"],
+			update_logs: [{log: "created", updated_at: new Date() }],
 			deleted_at: null,
 		});
 	}

@@ -85,7 +85,7 @@ class UserServices {
 		}
 
 		if (! await UserRepository.findUserById(session.user_id) )
-			return;
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } }; 
 
 		let outherUser;
 
@@ -106,7 +106,7 @@ class UserServices {
 				}
 			}};
 
-		return { statuscode: 422, message: { error: "unable to complete the request" } };
+		return { statuscode: 404, message: { error: "username not found" } };
 	}
 }
 
