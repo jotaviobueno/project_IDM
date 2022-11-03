@@ -7,3 +7,4 @@ import AuthLoginController from "../../http/Controller/User/AuthLogin.js";
 
 userRoutes.post("/sign-up", UserController.storage );
 userRoutes.post("/sign-in", AuthLoginController.createSession );
+userRoutes.get("/profile", UserController.profile );

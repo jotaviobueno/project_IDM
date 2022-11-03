@@ -19,6 +19,15 @@ class AuthLoginRepository {
 		});
 	}
 
+	async existSession(session_id) {
+		const session = await SessionModel.findOne({session_id: session_id, disconnected_in: null});
+
+		if (! session )
+			return false;
+
+		return session;
+	}
+
 }
 
 export default new AuthLoginRepository;

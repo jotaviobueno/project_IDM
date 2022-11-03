@@ -15,9 +15,18 @@ class UserController {
 			resident_country: req.body.resident_country,
 		};
 
-		const stored = await UserServices.Storage(user);
+		const stored = await UserServices.storage(user);
 
 		return res.status(stored.statuscode).json(stored.message); 
+	}
+
+	async profile(req, res) {
+		const userAgent = req.headers["user-agent"];
+		const {session_id} = req.headers;
+	
+		const profile = await UserServices.profile(session_id, userAgent);
+
+		return res.status(profile.statuscode).json(profile.message); 
 	}
 }
 

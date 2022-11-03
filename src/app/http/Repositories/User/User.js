@@ -35,6 +35,21 @@ class UserRepository {
 		}
 	}
 
+	async findUserById(_id) {
+		try {
+
+			const user = await UserModel.findOne({_id: _id, deleted_at: null});
+
+			if (! user )
+				return false;
+			
+			return user;
+
+		} catch(e) {
+			return false;
+		}
+	}
+
 	async storageUser(user) {
 		return await UserModel.create({
 			full_name: user.full_name,
