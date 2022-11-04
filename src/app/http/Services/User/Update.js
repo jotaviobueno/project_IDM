@@ -85,8 +85,12 @@ class UpdateServices {
 		if (await ComparePassword(newPassword, user.password))
 			return { statuscode: 422, message: { error: "the password entered is identical to" } };
 
-		if (await UpdateRepository.updatePasswordLoggedIn(user._id, newPassword))
+		if (await UpdateRepository.updatePasswordLoggedIn(user._id, newPassword)) {
+			
+			await AuthLoginRepository.disconnectUser(session_id);
+
 			return { statuscode: 200, message: { success: "password has been changed" } };
+		}
 		
 		return { statuscode: 400, message: { error: "Failed to change password" } };
 	}

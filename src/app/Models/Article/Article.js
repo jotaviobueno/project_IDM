@@ -15,7 +15,7 @@ const Article = new Schema({
 	liked: { type: [String] },
 	article_id: { type: String, required: true },
 	comment_info: [{
-		user_id: String,
+		user_id: Object,
 		body: String
 	}],
 	created_at: { type: Date, default: Date.now, required: true },

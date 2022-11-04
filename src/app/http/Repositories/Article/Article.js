@@ -27,6 +27,30 @@ class ArticleRepository {
 		await UserModel.updateOne({_id: _id, deleted_at: null}, { $push: { article_owner: article_id }});
 	}
 
+	async existArticle(article_id) {
+		try {
+
+			const article = await ArticleModel.findOne({article_id: article_id, deleted_at: null});
+
+			if (! article)
+				return false;
+
+			return article;
+
+		} catch (e) {
+			return false;
+		}
+	}
+
+	async addComment(article_id, user_id, body) {
+		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null}, 
+			{$push: { comment_info: {user_id: user_id, body: body }}, updated_at: new Date() });
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
 }
 
 export default new ArticleRepository;

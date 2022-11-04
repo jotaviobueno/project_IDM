@@ -12,15 +12,16 @@ class ArticleController {
 		return res.status(stored.statuscode).json(stored.message);
 	}
 
-	// async addComment () {
-	// 	const userAgent = req.headers["user-agent"]; 
-	// 	const {session_id} = req.headers;
-	// 	const {body} = req.body;
+	async addComment (req, res) {
+		const userAgent = req.headers["user-agent"]; 
+		const {session_id} = req.headers;
+		const {article_id} = req.query;
+		const {body} = req.body;
 
-	// 	title, body, articleImageUrl, user_id, username;
-
-	// 	await ArticleServices.storageArticle(session_id, body, userAgent);
-	// }
+		const comment = await ArticleServices.addComment(session_id, body, article_id, userAgent);
+		
+		return res.status(comment.statuscode).json(comment.message);
+	}
 
 }
 

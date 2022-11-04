@@ -6,3 +6,4 @@ export const articleRoutes = Router();
 import ArticleController from "../../http/Controller/Article/Article.js";
 
 articleRoutes.post("/create/article", ArticleController.storageArticle );
+articleRoutes.post("/add-comment", ArticleController.addComment );
