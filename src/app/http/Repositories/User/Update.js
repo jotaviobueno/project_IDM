@@ -1,10 +1,12 @@
 import UserModel from "../../../Models/User/User.js";
 
+import {hash} from "bcrypt";
+
 class UpdateRepository {
     
 	async updateUsername(_id, newUsername, oldUsername) {
 		const update = await UserModel.updateOne({_id: _id, deleted_at: null}, 
-			{username: newUsername.replace(" ", ""), updated_at: new Date(), 
+			{username: newUsername, updated_at: new Date(), 
 				$push: { update_logs: { 
 					log: "updated username",
 					old: oldUsername,
@@ -27,6 +29,20 @@ class UpdateRepository {
 					new: newFullName,
 					updated_at: new Date() 
 				} } });
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
+
+	async updatePasswordLoggedIn(_id, newPassword) {
+		const update = await UserModel.updateOne({_id: _id, deleted_at: null}, 
+			{ password: await hash(newPassword, 10), updated_at: new Date(),
+				$push: { update_logs: { 
+					log: "password has been change",
+					updated_at: new Date() 
+				}}});
 
 		if (update.matchedCount === 1)
 			return true;

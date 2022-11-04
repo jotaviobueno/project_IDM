@@ -53,7 +53,7 @@ class UserRepository {
 	async storageUser(user) {
 		return await UserModel.create({
 			full_name: user.full_name,
-			username: user.username.replace(" ", ""),
+			username: user.username,
 			email: user.email,
 			email_verified: false,
 			password: await hash(user.password, 10),

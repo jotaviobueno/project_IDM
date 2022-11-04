@@ -5,7 +5,9 @@ class UpdateController {
 	async updateUsername(req, res) {
 		const {session_id} = req.headers;
 		const userAgent = req.headers["user-agent"];
-		const {new_username} = req.body;
+		let {new_username} = req.body;
+
+		new_username = new_username.replace(" ", ""); 
 
 		const update = await UpdateServices.updateUsername(session_id, new_username, userAgent);
 
@@ -22,6 +24,15 @@ class UpdateController {
 		return res.status(update.statuscode).json(update.message);
 	}
 
+	async updatePasswordLoggedIn(req, res) {
+		const {session_id} = req.headers;
+		const userAgent = req.headers["user-agent"];
+		const {password, new_password} = req.body;
+		
+		const update = await UpdateServices.updatePasswordLoggedIn(session_id, password, new_password, userAgent);
+
+		return res.status(update.statuscode).json(update.message);
+	}
 }
 
 export default new UpdateController;

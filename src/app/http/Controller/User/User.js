@@ -3,7 +3,7 @@ import UserServices from "../../Services/User/User.js";
 class UserController {
 
 	async storage(req, res) {
-		const user = {
+		let user = {
 			full_name: req.body.full_name,
 			username: req.body.username,
 			email: req.body.email,
@@ -14,6 +14,8 @@ class UserController {
 			birth_date: req.body.birth_date,
 			resident_country: req.body.resident_country,
 		};
+
+		user.username = user.username.replace(" ", "");
 
 		const stored = await UserServices.storage(user);
 
@@ -31,8 +33,10 @@ class UserController {
 
 	async outherProfile(req, res) {
 		const userAgent = req.headers["user-agent"];
-		const {username} = req.params;
+		let {username} = req.params;
 		const {session_id} = req.headers;
+
+		username = username.replace(" ", "");
 
 		const profile = await UserServices.outherProfiles(session_id, username, userAgent);
 

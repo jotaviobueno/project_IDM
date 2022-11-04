@@ -10,7 +10,7 @@ class UserServices {
 		if (await UserRepository.existEmail(user.email))
 			return { statuscode: 422, message: { error: "invalid credentials" } };
 
-		if (await UserRepository.existUsername(user.username.replace(" ", "")))
+		if (await UserRepository.existUsername(user.username))
 			return { statuscode: 422, message: { error: "user name already exists" } };
 
 		let stored;
@@ -89,7 +89,7 @@ class UserServices {
 
 		let outherUser;
 
-		if ((outherUser = await UserRepository.existUsername(username.replace(" ", ""))))
+		if ((outherUser = await UserRepository.existUsername(username)))
 			return { statuscode: 200, message: { 
 				user: {
 					full_name: outherUser.full_name,
