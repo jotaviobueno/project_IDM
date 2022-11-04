@@ -51,6 +51,21 @@ class ArticleRepository {
 
 		return false;
 	}
+
+	async listAllArticles() {
+		return await ArticleModel.find({}).select({
+			views: 0,
+			like: 0,
+			liked: 0,
+			comment_info: 0,
+			created_at: 0,
+			updated_at: 0,
+			deleted_at: 0,
+			_id: 0,
+			__v: 0,
+			user_id: 0
+		});
+	}
 }
 
 export default new ArticleRepository;

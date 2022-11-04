@@ -79,6 +79,28 @@ class ArticleServices {
 
 		return { statuscode: 422, message: { error: "failed to add comment" } };
 	}
+
+	async listAllArticles(session_id, userAgent) {
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let articles;
+
+		if ((articles = await ArticleRepository.listAllArticles()))
+			return { statuscode: 200, message: { articles } };
+
+		return { statuscode: 422, message: { error: "article listing failure" } };
+	}
 }
 
 export default new ArticleServices;
