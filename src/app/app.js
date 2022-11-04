@@ -1,4 +1,5 @@
 import {userRoutes} from "../app/Routes/User/routes.js";
+import {articleRoutes} from "../app/Routes/Article/routes.js";
 
 import cors from "cors";
 
@@ -15,4 +16,6 @@ export default function Application (app, express) {
 
 	// set routes
 	app.use("/", userRoutes);
+	
+	app.use("/", articleRoutes);
 }
