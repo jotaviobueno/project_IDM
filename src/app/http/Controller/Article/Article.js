@@ -32,6 +32,14 @@ class ArticleController {
 		return res.status(articles.statuscode).json(articles.message);
 	}
 
+	async listAnArticle(req, res) {
+		const {session_id} = req.headers;
+		const {article_id} = req.query;
+		const userAgent = req.headers["user-agent"];
+
+		await ArticleServices.listAnArticle(session_id, article_id, userAgent);
+	}
+
 }
 
 export default new ArticleController;

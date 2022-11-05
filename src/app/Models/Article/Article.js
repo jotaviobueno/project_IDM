@@ -16,7 +16,8 @@ const Article = new Schema({
 	article_id: { type: String, required: true },
 	comment_info: [{
 		user_id: Object,
-		body: String
+		body: String,
+		id: String,
 	}],
 	created_at: { type: Date, default: Date.now, required: true },
 	updated_at: { type: Date, required: true },

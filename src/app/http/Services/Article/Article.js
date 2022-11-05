@@ -101,6 +101,30 @@ class ArticleServices {
 
 		return { statuscode: 422, message: { error: "article listing failure" } };
 	}
+
+	async listAnArticle(session_id, article_id, userAgent) {
+
+		let article;
+
+		if (! (article = await ArticleRepository.existArticle(article_id)))
+			return { statuscode: 422, message: { error: "article id its invalid" } };
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+		
+		await ArticleRepository.listingAllComment(article.comment_info);
+
+
+	}
 }
 
 export default new ArticleServices;

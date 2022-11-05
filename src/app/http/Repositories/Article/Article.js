@@ -44,7 +44,7 @@ class ArticleRepository {
 
 	async addComment(article_id, user_id, body) {
 		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null}, 
-			{$push: { comment_info: {user_id: user_id, body: body }}, updated_at: new Date() });
+			{$push: { comment_info: {user_id: user_id, body: body, id: nanoid() }}, updated_at: new Date() });
 
 		if (update.matchedCount === 1)
 			return true;
@@ -65,6 +65,41 @@ class ArticleRepository {
 			__v: 0,
 			user_id: 0
 		});
+	}
+
+	async listingAllComment(articleComment) {
+
+		let users = [];
+
+		for (let index = 0; index < articleComment.length; index++) {
+			let comment = articleComment[index];
+
+			let user = await UserModel.findOne({_id: comment.user_id, deleted_at: null}).select({
+				full_name: 0,
+				email: 0,
+				email_verified: 0,
+				password: 0,
+				genre: 0,
+				birth_date: 0,
+				resident_country: 0,
+				reports: 0,
+				friends: 0,
+				article_owner: 0,
+				permissions: 0,
+				created_at: 0,
+				updated_at: 0,
+				update_logs: 0,
+				deleted_at: 0,
+				_id: 0,
+				__v: 0
+			});
+
+			console.log(user);
+		}
+
+		// ERRO AQUI NÂO TO AFIM DE ARRUMAR HJ
+
+		console.log(users);
 	}
 }
 
