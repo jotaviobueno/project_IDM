@@ -101,6 +101,24 @@ class ArticleRepository {
 
 		console.log(users);
 	}
+
+	async verifyOwner(articleOwner, article_id) {
+
+		let isOwner = [];
+
+		for (let index = 0; index < articleOwner.length; index++) {
+			const articleId = articleOwner[index];
+			
+			if (articleId === article_id)
+				isOwner.push(articleId);
+
+		}
+
+		if (isOwner.length === 1)
+			return true;
+
+		return false;
+	}
 }
 
 export default new ArticleRepository;

@@ -23,7 +23,8 @@ const User = new Schema({
 	[
 		{log: { type: String, required: true }, 
 			old: String, 
-			new: String, 
+			new: String,
+			id: String,
 			updated_at: { type: Date, required: true } }
 	],
 	deleted_at: { type: Date, default: Date.now }

@@ -94,6 +94,11 @@ class ArticleServices {
 			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
 		}
 
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+
 		let articles;
 
 		if ((articles = await ArticleRepository.listAllArticles()))
@@ -120,6 +125,11 @@ class ArticleServices {
 	
 			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
 		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
 		
 		await ArticleRepository.listingAllComment(article.comment_info);
 

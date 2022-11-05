@@ -72,6 +72,26 @@ class UserRepository {
 		});
 	}
 
+	async createLog(_id, log, New, old, id) {
+		const update = await UserModel.updateOne({_id: _id, deleted_at: null}, 
+			{ $push: {
+				update_logs: {
+					log: log,
+					new: New ?? null,
+					id: id ?? null,
+					old: old ?? null,
+					updated_at: new Date()
+				}
+			},
+			updated_at: new Date()
+			});
+
+		if (update.modifiedCount === 1)
+			return true;
+
+		return false;
+	}
+
 }
 
 export default new UserRepository;
