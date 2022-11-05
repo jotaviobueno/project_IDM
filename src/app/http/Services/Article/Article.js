@@ -127,7 +127,10 @@ class ArticleServices {
 		if (! await UserRepository.findUserById(session.user_id) )
 			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
 
-		if (article)
+		if (article) {
+
+			await ArticleRepository.addViews(article._id, article.views);
+
 			return { statuscode: 200, message: { 
 				article: {
 					title: article.title,
@@ -141,6 +144,7 @@ class ArticleServices {
 				}, 
 				comments: await ArticleRepository.listingAllComment(article.comment_info) 
 			}};
+		}
 
 		return { statuscode: 422, message: { error: "article listing error" } };
 	}

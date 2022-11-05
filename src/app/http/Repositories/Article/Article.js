@@ -73,25 +73,7 @@ class ArticleRepository {
 		for (let index = 0; index < articleComment.length; index++) {
 			let comment = articleComment[index];
 
-			let user = await UserModel.findOne({_id: comment.user_id, deleted_at: null}).select({
-				full_name: 0,
-				email: 0,
-				email_verified: 0,
-				password: 0,
-				genre: 0,
-				birth_date: 0,
-				resident_country: 0,
-				reports: 0,
-				friends: 0,
-				article_owner: 0,
-				permissions: 0,
-				created_at: 0,
-				updated_at: 0,
-				update_logs: 0,
-				deleted_at: 0,
-				_id: 0,
-				__v: 0
-			});
+			let user = await UserModel.findOne({_id: comment.user_id, deleted_at: null});
 
 			if (user) {
 				const obj = Object.assign({
@@ -127,6 +109,10 @@ class ArticleRepository {
 			return true;
 
 		return false;
+	}
+
+	async addViews(article_id, totalViews) {
+		await ArticleModel.updateOne({_id: article_id, deleted_at: null}, { views: parseInt(totalViews) + 1, updated_at: new Date() });
 	}
 }
 
