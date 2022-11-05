@@ -11,6 +11,16 @@ class UpdateRepository {
 
 		return false;
 	}
+
+	async updateBody(article_id, newBody) {
+		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null}, 
+			{body: newBody, updated_at: new Date()});
+
+		if (update.modifiedCount === 1 )
+			return true;
+
+		return false;
+	}
 }
 
 export default new UpdateRepository;

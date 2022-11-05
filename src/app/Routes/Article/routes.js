@@ -13,3 +13,4 @@ articleRoutes.get("/articles", ArticleController.listAllArticles );
 articleRoutes.get("/article", ArticleController.listAnArticle );
 
 articleRoutes.patch("/article/update/title", UpdateController.updateTitle );
+articleRoutes.patch("/article/update/body", UpdateController.updateBody );
