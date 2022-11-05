@@ -114,6 +114,18 @@ class ArticleRepository {
 	async addViews(article_id, totalViews) {
 		await ArticleModel.updateOne({_id: article_id, deleted_at: null}, { views: parseInt(totalViews) + 1, updated_at: new Date() });
 	}
+
+	async findArticleByOwner(user_id) {
+		return  ArticleModel.find({user_id: user_id, deleted_at: null}).select({
+			_id: 0,
+			liked: 0,
+			comment_info: 0,
+			__v: 0,
+			created_at: 0,
+			updated_at: 0,
+			deleted_at: 0,
+		});
+	}
 }
 
 export default new ArticleRepository;

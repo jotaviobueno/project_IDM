@@ -1,5 +1,6 @@
 import UserRepository from "../../Repositories/User/User.js";
 import AuthLoginRepository from "../../Repositories/User/AuthLogin.js";
+import ArticleRepository from "../../Repositories/Article/Article.js";
 
 import CompareSession from "../../../Utils/User/CompareSession.js";
 
@@ -65,7 +66,9 @@ class UserServices {
 					created_at: user.created_at,
 					updated_at: user.updated_at,
 					update_logs: user.update_logs,
-				}
+				},
+
+				articles: await ArticleRepository.findArticleByOwner(user._id)
 			}};
 			
 		return { statuscode: 422, message: { error: "unable to complete the request" } };
@@ -101,9 +104,10 @@ class UserServices {
 					birth_date: outherUser.birth_date,
 					resident_country: outherUser.resident_country,
 					friends: outherUser.friends,
-					article_owner: outherUser.article_owner,
 					created_at: outherUser.created_at,
-				}
+				},
+
+				articles: await ArticleRepository.findArticleByOwner(outherUser._id)
 			}};
 
 		return { statuscode: 404, message: { error: "username not found" } };
