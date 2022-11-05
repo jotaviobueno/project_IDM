@@ -68,8 +68,7 @@ class ArticleRepository {
 	}
 
 	async listingAllComment(articleComment) {
-
-		let users = [];
+		let comments = [];
 
 		for (let index = 0; index < articleComment.length; index++) {
 			let comment = articleComment[index];
@@ -94,12 +93,22 @@ class ArticleRepository {
 				__v: 0
 			});
 
-			console.log(user);
+			if (user) {
+				const obj = Object.assign({
+					username: user.username,
+					avatar_url: user.avatar_url
+				}, {
+					comment: {
+						body: comment.body,
+						comment_id: comment.id
+					}
+				});
+	
+				comments.push(obj);
+			}
 		}
 
-		// ERRO AQUI NÂO TO AFIM DE ARRUMAR HJ
-
-		console.log(users);
+		return comments; 
 	}
 
 	async verifyOwner(articleOwner, article_id) {

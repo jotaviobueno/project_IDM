@@ -37,7 +37,9 @@ class ArticleController {
 		const {article_id} = req.query;
 		const userAgent = req.headers["user-agent"];
 
-		await ArticleServices.listAnArticle(session_id, article_id, userAgent);
+		const article = await ArticleServices.listAnArticle(session_id, article_id, userAgent);
+
+		return res.status(article.statuscode).json(article.message);
 	}
 
 }

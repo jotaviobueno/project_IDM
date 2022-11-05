@@ -94,9 +94,7 @@ class ArticleServices {
 			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
 		}
 
-		let user;
-
-		if (! (user = await UserRepository.findUserById(session.user_id)) )
+		if (! await UserRepository.findUserById(session.user_id) )
 			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
 
 		let articles;
@@ -126,14 +124,25 @@ class ArticleServices {
 			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
 		}
 
-		let user;
-
-		if (! (user = await UserRepository.findUserById(session.user_id)) )
+		if (! await UserRepository.findUserById(session.user_id) )
 			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
-		
-		await ArticleRepository.listingAllComment(article.comment_info);
 
+		if (article)
+			return { statuscode: 200, message: { 
+				article: {
+					title: article.title,
+					body: article.body,
+					article_image_url: article.article_image_url,
+					author_article: article.author_article,
+					views: article.views,
+					like: article.like,
+					liked: article.liked,
+					article_id: article.article_id,
+				}, 
+				comments: await ArticleRepository.listingAllComment(article.comment_info) 
+			}};
 
+		return { statuscode: 422, message: { error: "article listing error" } };
 	}
 }
 
