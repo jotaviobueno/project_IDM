@@ -139,10 +139,10 @@ class ArticleServices {
 					author_article: article.author_article,
 					views: article.views,
 					like: article.like,
-					liked: article.liked,
 					article_id: article.article_id,
 				}, 
-				comments: await ArticleRepository.listingAllComment(article.comment_info) 
+				comments: await ArticleRepository.listingAllComment(article.comment_info),
+				liked: await ArticleRepository.listingAllLiked(article.liked)
 			}};
 		}
 

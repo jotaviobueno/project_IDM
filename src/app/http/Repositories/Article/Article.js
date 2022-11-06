@@ -93,6 +93,40 @@ class ArticleRepository {
 		return comments; 
 	}
 
+	async listingAllLiked(liked) {
+
+		let users = [];
+
+		for (let index = 0; index < liked.length; index++) {
+			const user_id = liked[index];
+			
+			const user = await UserModel.findOne({_id: user_id, deleted_at: null}).select({
+				_id: 0,
+				full_name: 0,
+				email: 0,
+				email_verified: 0,
+				password: 0,
+				genre: 0,
+				birth_date: 0,
+				resident_country: 0,
+				reports: 0,
+				friends: 0,
+				article_owner: 0,
+				permissions: 0,
+				created_at: 0,
+				updated_at: 0,
+				update_logs: 0,
+				deleted_at: 0,
+				__v: 0
+			});
+
+			if (user)
+				users.push(user);
+		}
+
+		return users;
+	}
+
 	async verifyOwner(articleOwner, article_id) {
 
 		let isOwner = [];
