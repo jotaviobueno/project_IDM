@@ -42,6 +42,15 @@ class ArticleController {
 		return res.status(article.statuscode).json(article.message);
 	}
 
+	async addLike(req, res) {
+		const {session_id} = req.headers;
+		const {article_id} = req.query;
+		const userAgent = req.headers["user-agent"];
+
+		const update = await ArticleServices.addLike(session_id, article_id, userAgent);
+
+		return res.status(update.statuscode).json(update.message);
+	}
 }
 
 export default new ArticleController;

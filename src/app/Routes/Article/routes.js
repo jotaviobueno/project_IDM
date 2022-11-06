@@ -14,3 +14,5 @@ articleRoutes.get("/article", ArticleController.listAnArticle );
 
 articleRoutes.patch("/article/update/title", UpdateController.updateTitle );
 articleRoutes.patch("/article/update/body", UpdateController.updateBody );
+
+articleRoutes.post("/add/like", ArticleController.addLike );

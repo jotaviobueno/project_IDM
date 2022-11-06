@@ -126,6 +126,46 @@ class ArticleRepository {
 			deleted_at: 0,
 		});
 	}
+
+	async verifyLike(liked, _id) {
+
+		let test = [];
+
+		for (let index = 0; index < liked.length; index++) {
+			const user_id = liked[index];
+
+			if (user_id === _id.toString()) 
+				test.push(user_id);
+		}
+
+		if (test.length > 0 )
+			return true;
+
+		return false;
+	}
+
+	async removeLike(article_id, totalLike, user_id) {
+		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null}, 
+			{ $pull: { liked: user_id.toString() }, like: parseInt(totalLike) - parseInt(1), updated_at: new Date() });
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
+
+	async addLike(article_id, totalLike, user_id) {
+		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null}, {
+			like: parseInt(totalLike) + 1, updated_at: new Date(), $push: {
+				liked: user_id
+			}
+		});
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
 }
 
 export default new ArticleRepository;
