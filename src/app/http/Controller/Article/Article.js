@@ -51,6 +51,16 @@ class ArticleController {
 
 		return res.status(update.statuscode).json(update.message);
 	}
+
+	async deleteArticle(req, res) {
+		const {session_id} = req.headers;
+		const {article_id} = req.query;
+		const userAgent = req.headers["user-agent"];
+
+		const deleteArticle = await ArticleServices.deleteArticle(session_id, article_id, userAgent);
+		
+		return res.status(deleteArticle.statuscode).json(deleteArticle.message);
+	}
 }
 
 export default new ArticleController;

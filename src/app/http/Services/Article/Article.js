@@ -149,7 +149,6 @@ class ArticleServices {
 		return { statuscode: 422, message: { error: "article listing error" } };
 	}
 
-
 	async addLike(session_id, article_id, userAgent) {
 
 		let article;
@@ -186,6 +185,45 @@ class ArticleServices {
 			return { statuscode: 204, message: { success: "" } };
 
 		return { statuscode: 422, message: { error: "failed to like" } };
+	}
+
+	async deleteArticle(session_id, article_id, userAgent) {
+
+		let article;
+
+		if (! (article = await ArticleRepository.existArticle(article_id)))
+			return { statuscode: 422, message: { error: "article id its invalid" } };
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+
+		if (await ArticleRepository.verifyOwner(user.article_owner, article_id)) {
+
+			if (await ArticleRepository.deleteArticle(article._id)) {
+			
+				await UserRepository.createLog(user._id, "deleted article", null, null, article.article_id);
+				
+				return { statuscode: 200, message: { success: "article deleted" } }; 
+			}
+
+			return { statuscode: 422, message: { error: "article deletion failed" } }; 
+		}
+
+		return { statuscode: 401, message: { error: "not authorized" } }; 		
 	}
 }
 

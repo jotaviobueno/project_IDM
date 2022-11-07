@@ -53,7 +53,7 @@ class ArticleRepository {
 	}
 
 	async listAllArticles() {
-		return await ArticleModel.find({}).select({
+		return await ArticleModel.find({deleted_at: null}).select({
 			views: 0,
 			like: 0,
 			liked: 0,
@@ -194,6 +194,16 @@ class ArticleRepository {
 				liked: user_id
 			}
 		});
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
+
+	async deleteArticle(article_id) {
+		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null }, {
+			deleted_at: new Date(), updated_at: new Date() });
 
 		if (update.matchedCount === 1)
 			return true;
