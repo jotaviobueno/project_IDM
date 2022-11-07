@@ -17,3 +17,4 @@ articleRoutes.patch("/article/update/body", UpdateController.updateBody );
 
 articleRoutes.post("/add/like", ArticleController.addLike );
 articleRoutes.delete("/article/delete", ArticleController.deleteArticle );
+articleRoutes.delete("/artlce/delete-comment", ArticleController.deleteComment );

@@ -18,6 +18,7 @@ const Article = new Schema({
 		user_id: Object,
 		body: String,
 		id: String,
+		deleted_at: Date
 	}],
 	created_at: { type: Date, default: Date.now, required: true },
 	updated_at: { type: Date, required: true },

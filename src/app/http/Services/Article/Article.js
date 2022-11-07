@@ -225,6 +225,39 @@ class ArticleServices {
 
 		return { statuscode: 401, message: { error: "not authorized" } }; 		
 	}
+
+	async deleteComment(session_id, article_id, comment_id, userAgent) {
+
+		let article;
+
+		if (! (article = await ArticleRepository.existArticle(article_id)))
+			return { statuscode: 422, message: { error: "article id its invalid" } };
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+		
+		if (await ArticleRepository.existComment(article._id, comment_id, user._id)) {
+		
+			if (await ArticleRepository.deleteComment(article._id, comment_id, user._id)) {
+				
+			}
+		}
+
+	}
 }
 
 export default new ArticleServices;

@@ -44,7 +44,7 @@ class ArticleRepository {
 
 	async addComment(article_id, user_id, body) {
 		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null}, 
-			{$push: { comment_info: {user_id: user_id, body: body, id: nanoid() }}, updated_at: new Date() });
+			{$push: { comment_info: {user_id: user_id, body: body, id: nanoid(), deleted_at: null }}, updated_at: new Date() });
 
 		if (update.matchedCount === 1)
 			return true;
@@ -210,6 +210,36 @@ class ArticleRepository {
 
 		return false;
 	}
+
+	async existComment(articleId, comment_id, user_id ) {
+
+		try {
+
+			const comment = await ArticleModel.findOne({_id: articleId, deleted_at: null, 
+				comment_info: { $elemMatch: {id: comment_id, user_id: user_id } }});
+
+			if (! comment )
+				return false;
+
+			return comment;
+
+		} catch (e) {
+			return false;
+		}
+	}
+
+	async deleteComment(articleId, comment_id, user_id) {
+		const update = await ArticleModel.updateOne({_id: articleId, deleted_at: null }, {
+			comment_info: { $elemMatch: {id: comment_id, user_id: user_id},
+				$addToSet: { deleted_at: new Date() }}, updated_at: new Date()});
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
+
+	// não ta funcionando da maneira certa
 }
 
 export default new ArticleRepository;
