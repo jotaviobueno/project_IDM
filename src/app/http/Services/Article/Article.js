@@ -74,8 +74,10 @@ class ArticleServices {
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
 			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
 
-		if (await ArticleRepository.addComment(article._id, user._id, body))
-			return { statuscode: 204, message: { success: " " } };
+		let comment;
+
+		if ((comment = await ArticleRepository.addComment(article._id, user._id, body)))
+			return { statuscode: 201, message: { success: "comment created", comment } };
 
 		return { statuscode: 422, message: { error: "failed to add comment" } };
 	}

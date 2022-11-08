@@ -43,11 +43,14 @@ class ArticleRepository {
 	}
 
 	async addComment(article_id, user_id, body) {
+
+		const comment_id =  nanoid();
+
 		const update = await ArticleModel.updateOne({_id: article_id, deleted_at: null}, 
-			{$push: { comment_info: {user_id: user_id, body: body, id: nanoid(), deleted_at: null }}, updated_at: new Date() });
+			{$push: { comment_info: {user_id: user_id, body: body, id: comment_id, deleted_at: null }}, updated_at: new Date() });
 
 		if (update.matchedCount === 1)
-			return true;
+			return {comment_id: comment_id, body: body};
 
 		return false;
 	}
@@ -229,14 +232,14 @@ class ArticleRepository {
 	}
 
 	async deleteComment(articleId, comment_id, user_id) {
-		const update = await ArticleModel.updateOne({_id: articleId, deleted_at: null }, {
-			comment_info: { $elemMatch: {id: comment_id, user_id: user_id},
-				$addToSet: { deleted_at: new Date() }}, updated_at: new Date()});
+		// const update = await ArticleModel.updateOne({_id: articleId, deleted_at: null, 
+		// 	comment_info: { $elemMatch: {id: comment_id, user_id: user_id} }}, {
+		// 	comment_info: {$addToSet: { deleted_at: new Date()} }, updated_at: new Date()});
 
-		if (update.matchedCount === 1)
-			return true;
+		// if (update.matchedCount === 1)
+		// 	return true;
 
-		return false;
+		// return false;
 	}
 
 	// não ta funcionando da maneira certa
