@@ -76,8 +76,12 @@ class ArticleServices {
 
 		let comment;
 
-		if ((comment = await ArticleRepository.addComment(article._id, user._id, body)))
+		if ((comment = await ArticleRepository.addComment(article._id, user._id, body))) {
+			
+			await UserRepository.createLog(user._id, "add new commnet in article", null, null, );
+
 			return { statuscode: 201, message: { success: "comment created", comment } };
+		}
 
 		return { statuscode: 422, message: { error: "failed to add comment" } };
 	}
@@ -256,6 +260,8 @@ class ArticleServices {
 		
 			if (await ArticleRepository.deleteComment(article._id, comment_id, user._id)) {
 				
+				// não está funcionando da maneira certa
+
 			}
 		}
 

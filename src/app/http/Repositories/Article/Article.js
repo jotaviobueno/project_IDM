@@ -76,21 +76,25 @@ class ArticleRepository {
 		for (let index = 0; index < articleComment.length; index++) {
 			let comment = articleComment[index];
 
-			let user = await UserModel.findOne({_id: comment.user_id, deleted_at: null});
+			if (comment)
+				if (! comment.deleted_at) {
 
-			if (user) {
-				const obj = Object.assign({
-					username: user.username,
-					avatar_url: user.avatar_url
-				}, {
-					comment: {
-						body: comment.body,
-						comment_id: comment.id
+					let user = await UserModel.findOne({_id: comment.user_id, deleted_at: null});
+		
+					if (user) {
+						const obj = Object.assign({
+							username: user.username,
+							avatar_url: user.avatar_url
+						}, {
+							comment: {
+								body: comment.body,
+								comment_id: comment.id
+							}
+						});
+
+						comments.push(obj);
 					}
-				});
-	
-				comments.push(obj);
-			}
+				}
 		}
 
 		return comments; 
@@ -219,7 +223,7 @@ class ArticleRepository {
 		try {
 
 			const comment = await ArticleModel.findOne({_id: articleId, deleted_at: null, 
-				comment_info: { $elemMatch: {id: comment_id, user_id: user_id } }});
+				comment_info: { $elemMatch: {id: comment_id, user_id: user_id, deleted_at: null } }});
 
 			if (! comment )
 				return false;
@@ -231,10 +235,19 @@ class ArticleRepository {
 		}
 	}
 
-	async deleteComment(articleId, comment_id, user_id) {
-		// const update = await ArticleModel.updateOne({_id: articleId, deleted_at: null, 
-		// 	comment_info: { $elemMatch: {id: comment_id, user_id: user_id} }}, {
-		// 	comment_info: {$addToSet: { deleted_at: new Date()} }, updated_at: new Date()});
+	async deleteComment(article_id, commentId, user_id) {
+		
+
+		
+		const a = await ArticleModel.updateOne({_id: article_id, "comment_info.$.id": commentId, "comment_info.user_id": user_id }, 
+			{$set: {"comment_info.$.deleted_at": new Date()}});
+		
+		console.log(a);
+
+		return;
+
+		const update = await ArticleModel.updateOne({_id: articleId, deleted_at: null, 
+			$push: { comment_info: { $each: [{deleted_at: new Date()}] } }});
 
 		// if (update.matchedCount === 1)
 		// 	return true;
