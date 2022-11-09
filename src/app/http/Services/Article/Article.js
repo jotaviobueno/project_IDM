@@ -260,11 +260,15 @@ class ArticleServices {
 		
 			if (await ArticleRepository.deleteComment(article._id, comment_id, user._id)) {
 				
-				// não está funcionando da maneira certa
+				await UserRepository.createLog(user._id, "deleted commnet", null, null, comment_id);
 
+				return { statuscode: 200, message: { success: "comment deleted" } }; 
 			}
-		}
 
+			return { statuscode: 422, message: { error: "failed to delete comment" } }; 
+		}
+		
+		return { statuscode: 404, message: { error: "comment does not exist" } }; 
 	}
 }
 

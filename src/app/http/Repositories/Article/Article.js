@@ -236,26 +236,15 @@ class ArticleRepository {
 	}
 
 	async deleteComment(article_id, commentId, user_id) {
-		
+		const update = await ArticleModel.updateOne({_id: article_id, comment_info: {
+			$elemMatch: {id: commentId, user_id: user_id}}, 
+		}, {$set: {"comment_info.$.deleted_at": new Date()}});
 
-		
-		const a = await ArticleModel.updateOne({_id: article_id, "comment_info.$.id": commentId, "comment_info.user_id": user_id }, 
-			{$set: {"comment_info.$.deleted_at": new Date()}});
-		
-		console.log(a);
+		if (update.matchedCount === 1)
+			return true;
 
-		return;
-
-		const update = await ArticleModel.updateOne({_id: articleId, deleted_at: null, 
-			$push: { comment_info: { $each: [{deleted_at: new Date()}] } }});
-
-		// if (update.matchedCount === 1)
-		// 	return true;
-
-		// return false;
+		return false;
 	}
-
-	// não ta funcionando da maneira certa
 }
 
 export default new ArticleRepository;

@@ -67,9 +67,9 @@ class ArticleController {
 		const {article_id, comment_id} = req.query;
 		const userAgent = req.headers["user-agent"];
 
-		const a = await ArticleServices.deleteComment(session_id, article_id, comment_id, userAgent);
+		const deleteComment = await ArticleServices.deleteComment(session_id, article_id, comment_id, userAgent);
 	
-		console.log(a);
+		return res.status(deleteComment.statuscode).json(deleteComment.message);
 	}
 }
 
