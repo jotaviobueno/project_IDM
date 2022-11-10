@@ -71,6 +71,17 @@ class ArticleController {
 	
 		return res.status(deleteComment.statuscode).json(deleteComment.message);
 	}
+
+	async updateComment(req, res) {
+		const {session_id} = req.headers;
+		const {article_id, comment_id} = req.query;
+		const {new_body} = req.body;
+		const userAgent = req.headers["user-agent"];
+
+		const updateComment = await ArticleServices.updateCommnet(session_id, article_id, comment_id, new_body, userAgent);
+
+		return res.status(updateComment.statuscode).json(updateComment.message);
+	}
 }
 
 export default new ArticleController;

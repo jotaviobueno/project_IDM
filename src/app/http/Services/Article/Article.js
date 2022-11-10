@@ -270,6 +270,47 @@ class ArticleServices {
 		
 		return { statuscode: 404, message: { error: "comment does not exist" } }; 
 	}
+
+	async updateCommnet(session_id, article_id, comment_id, newBody, userAgent) {
+	
+		let article;
+
+		if (! (article = await ArticleRepository.existArticle(article_id)))
+			return { statuscode: 422, message: { error: "article id its invalid" } };
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+
+		if (! await ArticleRepository.existComment(article._id, comment_id, user._id)) 
+			return { statuscode: 404, message: { error: "comment does not exist" } }; 
+
+		if (await ArticleRepository.updateComment(article._id, comment_id, user._id, newBody)) {
+
+			// Arrumar o log, adicionar o old body
+			await UserRepository.createLog(user._id, "updated comment", newBody, null, article_id);
+
+			return { statuscode: 200, message: { success: "comment was been changed",
+				commnet_id: comment_id,
+				body: newBody,
+			} }; 
+		}
+		
+		return { statuscode: 422, message: { error: "error when changing comment body" } }; 
+	}
 }
 
 export default new ArticleServices;

@@ -238,8 +238,19 @@ class ArticleRepository {
 	async deleteComment(article_id, commentId, user_id) {
 		const update = await ArticleModel.updateOne({_id: article_id, comment_info: {
 			$elemMatch: {id: commentId, user_id: user_id}}, 
-		}, {$set: {"comment_info.$.deleted_at": new Date()}});
+		}, {$set: {"comment_info.$.deleted_at": new Date()}, updated_at: new Date()});
 
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
+
+	async updateComment(article_id, commentId, user_id, newBody) {
+		const update = await ArticleModel.updateOne({_id: article_id, comment_info: {
+			$elemMatch: {id: commentId, user_id: user_id}}, 
+		}, {$set: {"comment_info.$.body": newBody}, updated_at: new Date()});
+	
 		if (update.matchedCount === 1)
 			return true;
 
