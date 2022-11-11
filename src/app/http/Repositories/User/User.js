@@ -61,6 +61,7 @@ class UserRepository {
 			genre: user.genre,
 			birth_date: new Date(user.birth_date),
 			resident_country: user.resident_country,
+			request_received: [],
 			reports: [],
 			friends: [],
 			article_owner: [],
@@ -85,6 +86,24 @@ class UserRepository {
 			},
 			updated_at: new Date()
 			});
+
+		if (update.modifiedCount === 1)
+			return true;
+
+		return false;
+	}
+
+	async alreadySentAFriendRequest(userId, outherId) {
+		if (! await UserModel.findOne({_id: outherId, deleted_at: null, request_received: {$eq: userId }}))
+			return true;
+
+		return false;
+	}
+	
+	async sendFriendRequest(userId, outherUserId) {
+		const update = await UserModel.updateOne({_id: outherUserId, deleted_at: null},  {
+			$push:{ request_received: userId.toString() }
+		});
 
 		if (update.modifiedCount === 1)
 			return true;

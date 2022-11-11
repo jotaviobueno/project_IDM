@@ -14,6 +14,7 @@ const User = new Schema({
 	birth_date: { type: Date, required: true },
 	resident_country: { type: String, required: true },
 	reports: { type: Array, required: true },
+	request_received: { type: Array, required: true },
 	friends: { type: Array, required: true },
 	article_owner: { type: Array, required: true },
 	permissions: { type: Array, required: true },

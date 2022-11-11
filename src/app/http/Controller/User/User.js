@@ -42,6 +42,18 @@ class UserController {
 
 		return res.status(profile.statuscode).json(profile.message); 
 	}
+
+	async sendFriendRequest(req, res) {
+		const {session_id} = req.headers;
+		let {username} = req.body;
+		const userAgent = req.headers["user-agent"];
+
+		username.replace(" ", "");
+
+		const request = await UserServices.sendFriendRequest(session_id, username, userAgent);
+		
+		return res.status(request.statuscode).json(request.message); 
+	}
 }
 
 export default new UserController;

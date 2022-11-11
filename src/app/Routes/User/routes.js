@@ -14,3 +14,5 @@ userRoutes.get("/user/:username", UserController.outherProfile );
 userRoutes.patch("/update/username", UpdateController.updateUsername);
 userRoutes.patch("/update/fullname", UpdateController.updateFullName);
 userRoutes.patch("/update/password", UpdateController.updatePasswordLoggedIn);
+
+userRoutes.get("/friend-request", UserController.sendFriendRequest);

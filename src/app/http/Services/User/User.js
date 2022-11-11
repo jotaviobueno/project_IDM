@@ -112,6 +112,41 @@ class UserServices {
 
 		return { statuscode: 404, message: { error: "username not found" } };
 	}
+
+	async sendFriendRequest(session_id, username, userAgent) {
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+
+		let outherUser;
+
+		if (! (outherUser = await UserRepository.existUsername(username) ))
+			return;
+
+		if (! await UserRepository.alreadySentAFriendRequest(user._id.toString(), outherUser._id))
+			return { statuscode: 422, message: { error: "Have you ever sent a friend request to this person?" } };
+			
+		else {
+			
+			if (await UserRepository.sendFriendRequest(user._id, outherUser._id))
+				return { statuscode: 200, message: { success: "friend request sent successfully" } };
+
+			return { statuscode: 400, message: { error: "failed to send friend request" } };
+		}
+	}
 }
 
 export default new UserServices;
