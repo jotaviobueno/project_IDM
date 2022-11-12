@@ -54,6 +54,15 @@ class UserController {
 		
 		return res.status(request.statuscode).json(request.message); 
 	}
+
+	async acceptFriendRequest(req, res) {
+		const {session_id, friend_id} = req.headers;
+		const userAgent = req.headers["user-agent"];
+
+		const request = await UserServices.acceptFriendRequest(session_id, friend_id, userAgent);
+		
+		return res.status(request.statuscode).json(request.message); 
+	}
 }
 
 export default new UserController;

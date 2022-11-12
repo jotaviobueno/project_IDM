@@ -35,7 +35,6 @@ class UserServices {
 	}
 
 	async profile(session_id, userAgent) {
-		
 		let session;
 
 		if (! (session = await AuthLoginRepository.existSession(session_id) ))
@@ -61,20 +60,23 @@ class UserServices {
 					genre: user.genre,
 					birth_date: user.birth_date,
 					resident_country: user.resident_country,
-					friends: user.friends,
 					article_owner: user.article_owner,
 					created_at: user.created_at,
 					updated_at: user.updated_at,
 					update_logs: user.update_logs,
 				},
 
-				articles: await ArticleRepository.findArticleByOwner(user._id)
+				articles: await ArticleRepository.findArticleByOwner(user._id),
+				received_friend_requests: user.request_received,
+				friend_requests_sent: user.friend_request_sent,
+				friends: await UserRepository.seeAllFriends(user.friends)
 			}};
 			
 		return { statuscode: 422, message: { error: "unable to complete the request" } };
 	}
 
 	async outherProfiles(session_id, username, userAgent) {
+		// exibição de amigos
 		let session;
 
 		if (! (session = await AuthLoginRepository.existSession(session_id) ))
@@ -90,24 +92,24 @@ class UserServices {
 		if (! await UserRepository.findUserById(session.user_id) )
 			return { statuscode: 401, message: { error: "you have problems with your registered email" } }; 
 
-		let outherUser;
+		let otherUser;
 
-		if ((outherUser = await UserRepository.existUsername(username)))
+		if ((otherUser = await UserRepository.existUsername(username)))
 			return { statuscode: 200, message: { 
 				user: {
-					full_name: outherUser.full_name,
-					username: outherUser.username,
-					email: outherUser.email,
-					email_verified: outherUser.email_verified,
-					avatar_url: outherUser.avatar_url,
-					genre: outherUser.genre,
-					birth_date: outherUser.birth_date,
-					resident_country: outherUser.resident_country,
-					friends: outherUser.friends,
-					created_at: outherUser.created_at,
+					full_name: otherUser.full_name,
+					username: otherUser.username,
+					email: otherUser.email,
+					email_verified: otherUser.email_verified,
+					avatar_url: otherUser.avatar_url,
+					genre: otherUser.genre,
+					birth_date: otherUser.birth_date,
+					resident_country: otherUser.resident_country,
+					created_at: otherUser.created_at,
 				},
 
-				articles: await ArticleRepository.findArticleByOwner(outherUser._id)
+				articles: await ArticleRepository.findArticleByOwner(otherUser._id),
+				friends: await UserRepository.seeAllFriends(otherUser.friends)
 			}};
 
 		return { statuscode: 404, message: { error: "username not found" } };
@@ -131,22 +133,71 @@ class UserServices {
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
 			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
 
-		let outherUser;
+		let otherUser;
 
-		if (! (outherUser = await UserRepository.existUsername(username) ))
-			return;
+		if (! (otherUser = await UserRepository.existUsername(username) ))
+			return { statuscode: 404, message: { error: "User not found" } };
 
-		if (! await UserRepository.alreadySentAFriendRequest(user._id.toString(), outherUser._id))
-			return { statuscode: 422, message: { error: "Have you ever sent a friend request to this person?" } };
+		if (user.username === username)
+			return { statuscode: 422, message: { error: "the name given is invalid" } };
+
+		if (! await UserRepository.alreadyAndYourFriend(otherUser.friends, user._id))
+			return { statuscode: 422, message: { error: "you are already friends with this user" } };
+
+		if (! await UserRepository.alreadySentAFriendRequest(user._id.toString(), otherUser._id)) 
+			return { statuscode: 422, message: { error: "you have already sent a friend request to this person" } };
 			
 		else {
-			
-			if (await UserRepository.sendFriendRequest(user._id, outherUser._id))
-				return { statuscode: 200, message: { success: "friend request sent successfully" } };
+			let friend_id;
+
+			if ((friend_id = await UserRepository.sendFriendRequest(user._id, otherUser._id))) {
+				
+				await UserRepository.updateListOtherUserFriend(user._id, otherUser._id, friend_id);
+
+				return { statuscode: 200, message: { success: "friend request sent successfully", friend_id: friend_id } };
+			}
 
 			return { statuscode: 400, message: { error: "failed to send friend request" } };
 		}
 	}
+
+	async acceptFriendRequest(session_id, friend_id, userAgent ) {
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+
+		let requestReceived;
+
+		if (! (requestReceived = await UserRepository.thisFriendIdExist(user._id, friend_id)))
+			return { statuscode: 404, message: { error: "friend_id its invalid" } };
+
+		const otherUser = await UserRepository.getOutherUser(requestReceived, friend_id);
+
+		if (await UserRepository.acceptFriendRequest(user._id, otherUser._id, friend_id)) {
+			
+			await UserRepository.updateOtherUser(otherUser._id, user._id, friend_id);
+
+			return { statuscode: 200, message: { success: "friend request accepted" } };
+		}
+
+		return { statuscode: 400, message: { error: "failed to accept friend request" } };
+	}
+
+	// rota de recusar o pedido de amizade
 }
 
 export default new UserServices;
