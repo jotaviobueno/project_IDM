@@ -196,8 +196,6 @@ class UserServices {
 
 		return { statuscode: 400, message: { error: "failed to accept friend request" } };
 	}
-
-	// rota de recusar o pedido de amizade
 }
 
 export default new UserServices;
