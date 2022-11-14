@@ -32,6 +32,18 @@ class UpdateController {
 		const update = await UpdateServices.updatePasswordLoggedIn(session_id, password, new_password, userAgent);
 
 		return res.status(update.statuscode).json(update.message);
+	} 
+
+	async updateGenre(req, res) {
+		const {session_id} = req.headers;
+		const userAgent = req.headers["user-agent"];
+		let {new_genre} = req.body;
+
+		const result = new_genre.toUpperCase();
+
+		const update = await UpdateServices.updateGenre(session_id, result, userAgent);
+
+		return res.status(update.statuscode).json(update.message);
 	}
 }
 

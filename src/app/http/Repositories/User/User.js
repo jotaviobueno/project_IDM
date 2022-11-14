@@ -81,7 +81,7 @@ class UserRepository {
 				update_logs: {
 					log: log,
 					new: New ?? null,
-					id: id ?? null,
+					id: id ?? nanoid(),
 					old: old ?? null,
 					updated_at: new Date()
 				}
@@ -110,7 +110,8 @@ class UserRepository {
 			$push:{ request_received: {
 				id: friend_id,
 				user_id: userId.toString()
-			}}
+			}},
+			updated_at: new Date()
 		});
 
 		if (update.modifiedCount === 1)
@@ -124,7 +125,8 @@ class UserRepository {
 			$push:{ friend_request_sent: {
 				id: friendId,
 				user_id: outherUserId.toString()
-			}}
+			}},
+			updated_at: new Date()
 		});
 
 		if (update.modifiedCount === 1)
@@ -163,7 +165,8 @@ class UserRepository {
 	async acceptFriendRequest(userId, outherUserId, friendId) {
 		
 		const update = await UserModel.updateOne({_id: userId, deleted_at: null}, {
-			$push: { friends: outherUserId }, $pull: {request_received: { id: friendId }}
+			$push: { friends: outherUserId }, $pull: {request_received: { id: friendId }},
+			updated_at: new Date()
 		});
 
 		if (update.modifiedCount === 1)
@@ -174,7 +177,8 @@ class UserRepository {
 
 	async updateOtherUser(outherUserId, userId, friendId ) {
 		const update = await UserModel.updateOne({_id: outherUserId, deleted_at: null}, {
-			$push: { friends: userId }, $pull: { friend_request_sent: { id: friendId }}
+			$push: { friends: userId }, $pull: { friend_request_sent: { id: friendId }},
+			updated_at: new Date()
 		});
 
 		if (update.modifiedCount === 1)

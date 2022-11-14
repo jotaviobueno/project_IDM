@@ -50,6 +50,30 @@ class UpdateRepository {
 		return false;
 	}
 
+	async validateGenre(newGenre) {
+		const genres = ["MALE", "FEMALE"];
+		let g = [];
+
+		genres.forEach((genre) => {
+			if (genre === newGenre)
+				g.push(newGenre);
+		});
+
+		if (g.length > 0)
+			return true;
+
+		return false;
+	}
+
+	async updateGenre(_id, newGenre) {
+		const update = await UserModel.updateOne({_id: _id, deleted_at: null}, 
+			{ genre: newGenre, updated_at: new Date() });
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
 }
 
 export default new UpdateRepository;

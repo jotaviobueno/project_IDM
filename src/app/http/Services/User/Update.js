@@ -94,6 +94,38 @@ class UpdateServices {
 		
 		return { statuscode: 400, message: { error: "Failed to change password" } };
 	}
+
+	async updateGenre(session_id, newGenre, userAgent) {
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+
+		if (! await UpdateRepository.validateGenre(newGenre))
+			return { statuscode: 422, message: { error: "genre invalid" } };
+
+		if (await UpdateRepository.updateGenre(user._id, newGenre)) {
+
+			await UserRepository.createLog(user._id, "change genre", newGenre, user.genre);
+
+			return { statuscode: 200, message: { success: "genre change" } };
+		}
+	
+		return { statuscode: 422, message: { error: "failed to change gender" } };
+	}
 }
 
 export default new UpdateServices;
