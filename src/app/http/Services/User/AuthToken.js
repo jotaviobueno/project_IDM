@@ -28,7 +28,7 @@ class AuthTokenServices {
 		if (user.email_verified)
 			return { statuscode: 422, message: { error: "your account is already verified" } };
 
-		await AuthTokenRepository.seeUserTokenAmounts(user._id.toString());
+		await AuthTokenRepository.seeUserTokenAmounts(user._id.toString(), "authenticate_account");
 
 		let token;
 		
@@ -60,7 +60,7 @@ class AuthTokenServices {
 		if (user.email_verified)
 			return { statuscode: 422, message: { error: "your account is already verified" } };
 
-		if (await AuthTokenRepository.existToken(user._id, auth_token)) {
+		if (await AuthTokenRepository.existToken(user._id, auth_token, "authenticate_account")) {
 
 			if (await AuthTokenRepository.updateToken(user._id)) {
 

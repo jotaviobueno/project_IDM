@@ -12,6 +12,7 @@ class AuthTokenRepository {
 				user_id: _id,
 				email: email,
 				token: nanoid(),
+				generated_token_for: "authenticate_account",
 				created_at: new Date(),
 				updated_at: new Date(),
 				expires_at: new Date().setHours(new Date().getHours() + 1),
@@ -24,20 +25,20 @@ class AuthTokenRepository {
 		}
 	}
 
-	async seeUserTokenAmounts(userId) {
-		const amountToken = await TokensModel.find({user_id: userId, status: "generated", deleted_at: null});
+	async seeUserTokenAmounts(userId, generated_token_for) {
+		const amountToken = await TokensModel.find({user_id: userId, status: "generated", generated_token_for: generated_token_for, deleted_at: null});
 
 		if (amountToken.length > 0)
 			amountToken.forEach(async (token) => {
-				await TokensModel.updateOne({_id: token._id, deleted_at: null, status: "generated"}, {
+				await TokensModel.updateOne({_id: token._id, deleted_at: null, status: "generated", }, {
 					status: "discarted", deleted_at: new Date(), updated_at: new Date()
 				});
 			});
 	}
 
-	async existToken(userId, tokenId) {
+	async existToken(userId, tokenId, generated_token_for) {
 		try {
-			const existToken = await TokensModel.findOne({user_id: userId.toString(), status: "generated", deleted_at: null, 
+			const existToken = await TokensModel.findOne({user_id: userId.toString(), status: "generated", generated_token_for: generated_token_for, deleted_at: null, 
 				token: tokenId});
 
 			if (!existToken)

@@ -12,6 +12,7 @@ const Token = new Schema({
 	status: { type: String, required: true, },
 	updated_at: { type: Date, required: true, },
 	sent_to_email: { type: Boolean, required: true, },
+	generated_token_for: { type: String, required: true, },
 	deleted_at: { type: Date },
         
 });
