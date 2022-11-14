@@ -6,13 +6,13 @@ import UserModel from "../../../Models/User/User.js";
 
 class AuthTokenRepository {
 
-	async generationTokenToAuthAccount(_id, email) {
+	async generationToken(_id, email, generated_token_for) {
 		try {
 			return await TokensModel.create({
 				user_id: _id,
 				email: email,
 				token: nanoid(),
-				generated_token_for: "authenticate_account",
+				generated_token_for: generated_token_for,
 				created_at: new Date(),
 				updated_at: new Date(),
 				expires_at: new Date().setHours(new Date().getHours() + 1),

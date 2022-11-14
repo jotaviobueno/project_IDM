@@ -19,7 +19,7 @@ class UserServices {
 
 		if ((stored = await UserRepository.storageUser(user))) {
 
-			const token = await AuthTokenRepository.generationTokenToAuthAccount(stored._id, stored.email);
+			const token = await AuthTokenRepository.generationToken(stored._id, stored.email, "authenticate_account");
 
 			return { statuscode: 201, message: { 
 				success: "account created",

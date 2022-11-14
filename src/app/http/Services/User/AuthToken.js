@@ -32,7 +32,7 @@ class AuthTokenServices {
 
 		let token;
 		
-		if ((token = await AuthTokenRepository.generationTokenToAuthAccount(user._id, user.email)))
+		if ((token = await AuthTokenRepository.generationToken(user._id, user.email, "authenticate_account")))
 			return { statuscode: 201, message: { token: token.token, expires_at: token.expires_at } };
 
 		return { statuscode: 422, message: { error: "failed to generate a new token" } };
@@ -77,6 +77,23 @@ class AuthTokenServices {
 		return { statuscode: 400, message: { error: "token informed does not exist" } }; 
 	}
 
+	async generationTokenTochangePassword(email) {
+
+		let user;
+
+		if (! (user = await UserRepository.existEmail(email)) )
+			return { statuscode: 401, message: { error: "informed and invalid email" } };
+
+		await AuthTokenRepository.seeUserTokenAmounts(user._id, "change_password");
+
+		let token;
+
+		if ((token = await AuthTokenRepository.generationToken(user._id, user.email, "change_password")))
+			return { statuscode: 201, message: { token: token.token, expires_at: token.expires_at } };
+
+
+		return { statuscode: 422, message: { eror: "failed to generate token" }};
+	}
 }
 
 export default new AuthTokenServices;

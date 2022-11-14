@@ -22,3 +22,5 @@ userRoutes.get("/accpet/friend-request", UserController.acceptFriendRequest);
 
 userRoutes.post("/generation/token/auth", AuthTokenController.createTokenToVerifyAccount);
 userRoutes.post("/verify-account", AuthTokenController.verifyAccount);
+
+userRoutes.post("/generation/token/change-password", AuthTokenController.generationTokenTochangePassword);
