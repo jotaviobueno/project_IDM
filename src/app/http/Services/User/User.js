@@ -1,6 +1,7 @@
 import UserRepository from "../../Repositories/User/User.js";
 import AuthLoginRepository from "../../Repositories/User/AuthLogin.js";
 import ArticleRepository from "../../Repositories/Article/Article.js";
+import AuthTokenRepository from "../../Repositories/User/AuthToken.js";
 
 import CompareSession from "../../../Utils/User/CompareSession.js";
 
@@ -16,7 +17,10 @@ class UserServices {
 
 		let stored;
 
-		if ((stored = await UserRepository.storageUser(user)))
+		if ((stored = await UserRepository.storageUser(user))) {
+
+			const token = await AuthTokenRepository.generationTokenToAuthAccount(stored._id, stored.email);
+
 			return { statuscode: 201, message: { 
 				success: "account created",
 				user: {
@@ -28,8 +32,12 @@ class UserServices {
 					genre: stored.genre,
 					birth_date: stored.birth_date,
 					resident_country: stored.resident_country,
-				}
+				},
+
+				auth_token: token.token,
+				expires_at: token.expires_at
 			}};
+		}
 
 		return { statuscode: 422, message: { error: "unable to complete the request" } };
 	}
@@ -76,7 +84,6 @@ class UserServices {
 	}
 
 	async outherProfiles(session_id, username, userAgent) {
-		// exibição de amigos
 		let session;
 
 		if (! (session = await AuthLoginRepository.existSession(session_id) ))
