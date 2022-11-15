@@ -154,6 +154,38 @@ class UpdateServices {
 		
 		return { statuscode: 400, message: { error: "password change failed" } };
 	}
+
+	async updateEmail(token, new_email) {
+
+		let tokenOwner;
+
+		if (!(tokenOwner = await AuthTokenRepository.existToken(token, "change_email")))
+			return { statuscode: 401, message: { error: "informed token is invalid" } };
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(tokenOwner.user_id)) )
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
+			
+		if (user.email === new_email)
+			return { statuscode: 400, message: { error: "the email provided is the same as your account" } };
+
+		if (await UserRepository.existEmail(new_email))
+			return { statuscode: 400, message: { error: "email informado já existe" } };
+
+		if (await UpdateRepository.updateEmail(user._id, new_email)) {
+			
+			await UserRepository.createLog(user._id, "change email", new_email, user.email);
+
+			await AuthLoginRepository.disconnectMany(user._id);
+
+			await AuthTokenRepository.updateToken(token, "change_email");
+
+			return { statuscode: 200, message: { success: "email has been changed" } };
+		}
+		
+		return { statuscode: 422, message: { error: "unable to proceed with update-email" } };
+	}
 }
 
 export default new UpdateServices;

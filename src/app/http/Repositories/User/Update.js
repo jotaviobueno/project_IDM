@@ -74,6 +74,17 @@ class UpdateRepository {
 
 		return false;
 	}
+
+	async updateEmail(_id, email) {
+		const update = await UserModel.updateOne({_id: _id, deleted_at: null}, {
+			email: email, updated_at: new Date()
+		});
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
 }
 
 export default new UpdateRepository;

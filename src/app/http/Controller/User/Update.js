@@ -54,6 +54,15 @@ class UpdateController {
 
 		return res.status(change.statuscode).json(change.message);
 	}
+
+	async updateEmail(req, res) {
+		const {token} = req.headers;
+		const {new_email} = req.body;
+
+		const change = await UpdateServices.updateEmail(token, new_email);
+
+		return res.status(change.statuscode).json(change.message);
+	}
 }
 
 export default new UpdateController;
