@@ -20,9 +20,10 @@ userRoutes.patch("/update/genre", UpdateController.updateGenre);
 userRoutes.get("/friend-request", UserController.sendFriendRequest);
 userRoutes.get("/accpet/friend-request", UserController.acceptFriendRequest);
 
-userRoutes.post("/generation/token/auth", AuthTokenController.createTokenToVerifyAccount);
+userRoutes.post("/generation/token/auth", AuthTokenController.generationTokenToVerifyAccount);
 userRoutes.post("/verify-account", AuthTokenController.verifyAccount);
 
 userRoutes.post("/generation/token/change-password", AuthTokenController.generationTokenTochangePassword);
 
-userRoutes.post("/change-password", UpdateController.updatePasswordWithToken);
+userRoutes.patch("/change-password", UpdateController.updatePasswordWithToken);
+userRoutes.post("/generation/token/change-email", AuthTokenController.generationTokenToChangeEmail );

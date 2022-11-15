@@ -25,7 +25,7 @@ class UpdateServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } }; 
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } }; 
 
 		if (user.username === newUsername)
 			return { statuscode: 422, message: { success: "you are trying to change the name to the same name as the account" } };
@@ -53,7 +53,7 @@ class UpdateServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } }; 
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } }; 
 
 		if (await UpdateRepository.updateFullName(user._id, newFullName, user.full_name))
 			return { statuscode: 204, message: { success: "successfully updated" } };
@@ -78,7 +78,7 @@ class UpdateServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
 
 		if (! await ComparePassword(password, user.password ))
 			return { statuscode: 403, message: { error: "invalid credentials" } };
@@ -113,7 +113,7 @@ class UpdateServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
 
 		if (! await UpdateRepository.validateGenre(newGenre))
 			return { statuscode: 422, message: { error: "genre invalid" } };
@@ -141,7 +141,7 @@ class UpdateServices {
 			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
 
 		if (await ComparePassword(user.password, newPassword))
-			return { statuscode: 400, message: { error: "the password entered is the same as the account" } };
+			return { statuscode: 403, message: { error: "the password entered is the same as the account" } };
 			
 		if (await UpdateRepository.updatePassword(user._id, newPassword)) {
 			

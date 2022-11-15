@@ -2,11 +2,11 @@ import AuthTokenServices from "../../Services/User/AuthToken.js";
 
 class AuthtokenController {
 
-	async createTokenToVerifyAccount(req, res) {
+	async generationTokenToVerifyAccount(req, res) {
 		const {session_id} = req.headers;
 		const userAgent = req.headers["user-agent"];
 
-		const token = await AuthTokenServices.createTokenToVerifyAccount(session_id, userAgent);
+		const token = await AuthTokenServices.generationTokenToVerifyAccount(session_id, userAgent);
 
 		return res.status(token.statuscode).json(token.message);
 	}
@@ -29,6 +29,15 @@ class AuthtokenController {
 		return res.status(token.statuscode).json(token.message);
 	}
 
+	async generationTokenToChangeEmail(req, res) {
+		const {session_id} = req.headers;
+		const {password} = req.body;
+		const userAgent = req.headers["user-agent"];
+
+		const token = await AuthTokenServices.generationTokenToChangeEmail(session_id, password, userAgent);
+
+		return res.status(token.statuscode).json(token.message);
+	}
 }
 
 export default new AuthtokenController;

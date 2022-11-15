@@ -97,7 +97,7 @@ class UserServices {
 		}
 
 		if (! await UserRepository.findUserById(session.user_id) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } }; 
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } }; 
 
 		let otherUser;
 
@@ -138,7 +138,7 @@ class UserServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
 
 		let otherUser;
 
@@ -185,7 +185,7 @@ class UserServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
 
 		let requestReceived;
 

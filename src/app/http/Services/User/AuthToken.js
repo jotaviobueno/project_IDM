@@ -3,10 +3,11 @@ import AuthLoginRepository from "../../Repositories/User/AuthLogin.js";
 import AuthTokenRepository from "../../Repositories/User/AuthToken.js";
 
 import CompareSession from "../../../Utils/User/CompareSession.js";
+import ComparePassword from "../../../Utils/User/ComparePassword.js";
 
 class AuthTokenServices {
 
-	async createTokenToVerifyAccount(session_id, userAgent) {
+	async generationTokenToVerifyAccount(session_id, userAgent) {
 
 		let session;
 
@@ -23,12 +24,12 @@ class AuthTokenServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
 
 		if (user.email_verified)
 			return { statuscode: 422, message: { error: "your account is already verified" } };
 
-		await AuthTokenRepository.seeUserTokenAmounts(user._id.toString(), "authenticate_account");
+		await AuthTokenRepository.seeUserTokenAmounts(user._id, "authenticate_account");
 
 		let token;
 		
@@ -55,7 +56,7 @@ class AuthTokenServices {
 		let user;
 
 		if (! (user = await UserRepository.findUserById(session.user_id)) )
-			return { statuscode: 401, message: { error: "you have problems with your registered email" } };
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
 
 		if (user.email_verified)
 			return { statuscode: 422, message: { error: "your account is already verified" } };
@@ -93,6 +94,38 @@ class AuthTokenServices {
 
 
 		return { statuscode: 422, message: { eror: "failed to generate token" }};
+	}
+
+	async generationTokenToChangeEmail(session_id, password, userAgent) {
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
+
+		if (! await ComparePassword(password, user.password))
+			return { statuscode: 403, message: { error: "invalid credentials" } };
+
+		await AuthTokenRepository.seeUserTokenAmounts(user._id, "change_email");
+
+		let token;
+		
+		if ((token = await AuthTokenRepository.generationToken(user._id, user.email, "change_email")))
+			return { statuscode: 201, message: { token: token.token, expires_at: token.expires_at } };
+	
+		return { statuscode: 422, message: { error: "failed to generate a new token" } };
 	}
 }
 
