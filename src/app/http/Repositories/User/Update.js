@@ -85,6 +85,20 @@ class UpdateRepository {
 
 		return false;
 	}
+
+	async deleteAccount(_id) {
+		const update = await UserModel.updateOne({_id: _id, deleted_at: null}, {
+			deleted_at: new Date(), updated_at: new Date(), $push: { update_logs: { 
+				log: "account deleted",
+				updated_at: new Date() 
+			} }
+		});
+
+		if (update.matchedCount === 1)
+			return true;
+
+		return false;
+	}
 }
 
 export default new UpdateRepository;

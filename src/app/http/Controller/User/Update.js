@@ -63,6 +63,14 @@ class UpdateController {
 
 		return res.status(change.statuscode).json(change.message);
 	}
+
+	async deleteAccount(req, res) {
+		const {token} = req.headers;
+
+		const deleteAccount = await UpdateServices.deleteAccount(token);
+
+		return res.status(deleteAccount.statuscode).json(deleteAccount.message);
+	}
 }
 
 export default new UpdateController;

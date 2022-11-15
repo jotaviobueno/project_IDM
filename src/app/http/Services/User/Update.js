@@ -186,6 +186,31 @@ class UpdateServices {
 		
 		return { statuscode: 422, message: { error: "unable to proceed with update-email" } };
 	}
+
+	async deleteAccount(token) {
+
+		let tokenOwner;
+
+		if (!(tokenOwner = await AuthTokenRepository.existToken(token, "delete_account")))
+			return { statuscode: 401, message: { error: "informed token is invalid" } };
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(tokenOwner.user_id)) )
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
+
+		if (await UpdateRepository.deleteAccount(user._id)) {
+			
+			await AuthLoginRepository.disconnectMany(user._id);
+	
+			await AuthTokenRepository.updateToken(token, "delete_account");
+	
+			return { statuscode: 200, message: { success: "account has been deleted" } };
+		}
+			
+		return { statuscode: 422, message: { error: "unable to proceed with update-email" } };
+
+	}
 }
 
 export default new UpdateServices;

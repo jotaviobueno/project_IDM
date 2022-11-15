@@ -31,3 +31,4 @@ userRoutes.post("/generation/token/change-email", AuthTokenController.generation
 userRoutes.patch("/change-email", UpdateController.updateEmail);
 
 userRoutes.post("/generation/token/delete-account", AuthTokenController.generationTokenToDeleteAccount);
+userRoutes.delete("/delete-account", UpdateController.deleteAccount);
