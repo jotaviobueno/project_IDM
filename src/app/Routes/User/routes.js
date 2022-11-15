@@ -24,3 +24,5 @@ userRoutes.post("/generation/token/auth", AuthTokenController.createTokenToVerif
 userRoutes.post("/verify-account", AuthTokenController.verifyAccount);
 
 userRoutes.post("/generation/token/change-password", AuthTokenController.generationTokenTochangePassword);
+
+userRoutes.post("/change-password", UpdateController.updatePasswordWithToken);

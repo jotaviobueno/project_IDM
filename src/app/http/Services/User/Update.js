@@ -1,6 +1,7 @@
 import UpdateRepository from "../../Repositories/User/Update.js";
 import UserRepository from "../../Repositories/User/User.js";
 import AuthLoginRepository from "../../Repositories/User/AuthLogin.js";
+import AuthTokenRepository from "../../Repositories/User/AuthToken.js";
 
 import CompareSession from "../../../Utils/User/CompareSession.js";
 import ComparePassword from "../../../Utils/User/ComparePassword.js";
@@ -85,7 +86,7 @@ class UpdateServices {
 		if (await ComparePassword(newPassword, user.password))
 			return { statuscode: 422, message: { error: "the password entered is identical to" } };
 
-		if (await UpdateRepository.updatePasswordLoggedIn(user._id, newPassword)) {
+		if (await UpdateRepository.updatePassword(user._id, newPassword)) {
 			
 			await AuthLoginRepository.disconnectUser(session_id);
 
@@ -125,6 +126,33 @@ class UpdateServices {
 		}
 	
 		return { statuscode: 422, message: { error: "failed to change gender" } };
+	}
+
+	async updatePasswordWithToken(token, newPassword) {
+
+		let tokenOwner;
+
+		if(!(tokenOwner = await AuthTokenRepository.existToken(token, "change_password")))
+			return { statuscode: 401, message: { error: "informed token is invalid" } };
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(tokenOwner.user_id)) )
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
+
+		if (await ComparePassword(user.password, newPassword))
+			return { statuscode: 400, message: { error: "the password entered is the same as the account" } };
+			
+		if (await UpdateRepository.updatePassword(user._id, newPassword)) {
+			
+			await AuthLoginRepository.disconnectMany(user._id);
+
+			await AuthTokenRepository.updateToken(token, "change_password");
+
+			return { statuscode: 200, message: { success: "password has been changed" } };
+		}
+		
+		return { statuscode: 400, message: { error: "password change failed" } };
 	}
 }
 

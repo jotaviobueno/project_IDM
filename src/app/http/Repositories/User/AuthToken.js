@@ -1,4 +1,3 @@
-import {hash, compare} from "bcrypt";
 import {nanoid} from "nanoid";
 
 import TokensModel from "../../../Models/User/Tokens.js";
@@ -36,9 +35,9 @@ class AuthTokenRepository {
 			});
 	}
 
-	async existToken(userId, tokenId, generated_token_for) {
+	async existToken(tokenId, generated_token_for) {
 		try {
-			const existToken = await TokensModel.findOne({user_id: userId.toString(), status: "generated", generated_token_for: generated_token_for, deleted_at: null, 
+			const existToken = await TokensModel.findOne({status: "generated", generated_token_for: generated_token_for, deleted_at: null, 
 				token: tokenId});
 
 			if (!existToken)
@@ -52,12 +51,12 @@ class AuthTokenRepository {
 		}
 	}
 
-	async updateToken(userId) {
-		const token = await TokensModel.updateOne({user_id: userId, status: "generated", deleted_at: null}, {
+	async updateToken(token, generated_token_for) {
+		const update = await TokensModel.updateOne({token: token, status: "generated", generated_token_for: generated_token_for, deleted_at: null}, {
 			status: "used", deleted_at: new Date(), updated_at: new Date()
 		});
 	
-		if (token.matchedCount === 1)
+		if (update.matchedCount === 1)
 			return true;
 
 		return false;

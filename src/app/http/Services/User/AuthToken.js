@@ -60,9 +60,9 @@ class AuthTokenServices {
 		if (user.email_verified)
 			return { statuscode: 422, message: { error: "your account is already verified" } };
 
-		if (await AuthTokenRepository.existToken(user._id, auth_token, "authenticate_account")) {
+		if (await AuthTokenRepository.existToken(auth_token, "authenticate_account")) {
 
-			if (await AuthTokenRepository.updateToken(user._id)) {
+			if (await AuthTokenRepository.updateToken(auth_token, "authenticate_account")) {
 
 				await AuthTokenRepository.updateUser(user._id);
 

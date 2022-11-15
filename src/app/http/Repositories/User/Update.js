@@ -36,7 +36,7 @@ class UpdateRepository {
 		return false;
 	}
 
-	async updatePasswordLoggedIn(_id, newPassword) {
+	async updatePassword(_id, newPassword) {
 		const update = await UserModel.updateOne({_id: _id, deleted_at: null}, 
 			{ password: await hash(newPassword, 10), updated_at: new Date(),
 				$push: { update_logs: { 

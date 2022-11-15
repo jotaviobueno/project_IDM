@@ -33,6 +33,20 @@ class AuthLoginRepository {
 			{disconnected_in: new Date(), updated_at: new Date()});
 	}
 
+	async disconnectMany(userId) {
+		const find = await SessionModel.find({user_id: userId, disconnected_in: null});
+
+		if (find.length > 0)
+			for (let index = 0; index < find.length; index++) {
+				const sessions = find[index];
+				
+				if (!sessions.disconnected_in)
+					await SessionModel.updateOne({_id: sessions._id, disconnected_in: null}, {
+						disconnected_in: new Date(), updated_at: new Date()
+					});
+			}
+	}
+
 }
 
 export default new AuthLoginRepository;
