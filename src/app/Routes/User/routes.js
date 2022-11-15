@@ -29,3 +29,5 @@ userRoutes.patch("/change-password", UpdateController.updatePasswordWithToken);
 userRoutes.post("/generation/token/change-email", AuthTokenController.generationTokenToChangeEmail );
 
 userRoutes.patch("/change-email", UpdateController.updateEmail);
+
+userRoutes.post("/generation/token/delete-account", AuthTokenController.generationTokenToDeleteAccount);

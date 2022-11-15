@@ -127,6 +127,38 @@ class AuthTokenServices {
 	
 		return { statuscode: 422, message: { error: "failed to generate a new token" } };
 	}
+
+	async generationTokenToDeleteAccount(session_id, password, userAgent) {
+
+		let session;
+
+		if (! (session = await AuthLoginRepository.existSession(session_id) ))
+			return { statuscode: 422, message: { error: "session id its invalid" } };
+	
+		if (! CompareSession(session, userAgent) ) {
+
+			await AuthLoginRepository.disconnectUser(session_id);
+	
+			return { statuscode: 403, message: { error: "unauthorized, please re-login" } }; 
+		}
+
+		let user;
+
+		if (! (user = await UserRepository.findUserById(session.user_id)) )
+			return { statuscode: 422, message: { error: "you have problems with your registered email" } };
+
+		if (! await ComparePassword(password, user.password))
+			return { statuscode: 403, message: { error: "invalid credentials" } };
+
+		await AuthTokenRepository.seeUserTokenAmounts(user._id, "delete_account");
+
+		let token;
+		
+		if ((token = await AuthTokenRepository.generationToken(user._id, user.email, "delete_account")))
+			return { statuscode: 201, message: { token: token.token, expires_at: token.expires_at } };
+	
+		return { statuscode: 422, message: { error: "failed to generate a new token" } };
+	}
 }
 
 export default new AuthTokenServices;
