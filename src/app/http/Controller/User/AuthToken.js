@@ -12,8 +12,7 @@ class AuthtokenController {
 	}
 
 	async verifyAccount(req, res) {
-		const {auth_token} = req.headers;
-		const {session_id} = req.headers;
+		const {auth_token, session_id} = req.headers;
 		const userAgent = req.headers["user-agent"];
 
 		const token = await AuthTokenServices.verifyAccount(session_id, auth_token, userAgent);

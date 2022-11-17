@@ -7,7 +7,6 @@ class UserController {
 			full_name: req.body.full_name,
 			username: req.body.username,
 			email: req.body.email,
-			email_verified: req.body.email_verified,
 			password: req.body.password,
 			avatar_url: req.body.avatar_url,
 			genre: req.body.genre,

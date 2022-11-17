@@ -208,8 +208,7 @@ class UpdateServices {
 			return { statuscode: 200, message: { success: "account has been deleted" } };
 		}
 			
-		return { statuscode: 422, message: { error: "unable to proceed with update-email" } };
-
+		return { statuscode: 422, message: { error: "unable to proceed with account deletion" } };
 	}
 }
 
