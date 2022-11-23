@@ -26,7 +26,7 @@ User Routes | Descrição
 /update/genre | alteração do ```genre``` ✔️
 /friend/request |  enviar pedido de amizade para um usuario. ✔️
 /accept/friend-request | aceitar pedido de amizade. ✔️
-/recuse/friend-request | aceitar pedido de amizade. ❌
+/recuse/friend-request | recusar pedido de amizade. ❌
 /generation/token/auth | geração de token para autenticar a sua conta, caso você tenha perdido o token gerado na criação ou o token tenha expirado. ✔️
 /verify-account | verificar a conta com o token gerado. ✔️
 /generation/token/change-password | geração de token para alteração de password. ✔️
